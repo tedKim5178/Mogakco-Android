@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import gdghackathon.mogakco.Controller.ProfileController;
 import gdghackathon.mogakco.R;
 import gdghackathon.mogakco.model.Profile;
+import gdghackathon.mogakco.model.UserInfoStatic;
 import gdghackathon.mogakco.tools.BottomNavigationViewHelper;
 import gdghackathon.mogakco.tools.RegisteredFragmentStatePagerAdapter;
 
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         String email = intent.getStringExtra("email");
         String profileImgUrl = intent.getStringExtra("profileImgUrl");
         String uid = intent.getStringExtra("uid");
+
+        UserInfoStatic.setUserName(name);
+        UserInfoStatic.setUserEmail(email);
 //        Log.d(TAG, "인증테스트 : " + name + email + profileImgUrl);
 
         databaseReference = databaseReference.child("profiles");

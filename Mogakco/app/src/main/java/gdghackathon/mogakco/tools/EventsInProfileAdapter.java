@@ -10,7 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+
 import gdghackathon.mogakco.R;
+import gdghackathon.mogakco.model.Event;
 import gdghackathon.mogakco.ui.EventDetailActivity;
 
 /**
@@ -20,9 +25,11 @@ import gdghackathon.mogakco.ui.EventDetailActivity;
 public class EventsInProfileAdapter extends RecyclerView.Adapter<EventsInProfileAdapter.EventsInfProfileViewHolder>{
     private static final String TAG = EventsInProfileAdapter.class.getSimpleName();
     private Context mContext;
+    private ArrayList<Event> mEventList;
 
-    public EventsInProfileAdapter(Context mContext){
+    public EventsInProfileAdapter(Context mContext, ArrayList<Event> mEventList){
         this.mContext = mContext;
+        this.mEventList = mEventList;
     }
 
     @Override
@@ -35,13 +42,19 @@ public class EventsInProfileAdapter extends RecyclerView.Adapter<EventsInProfile
 
     @Override
     public void onBindViewHolder(EventsInfProfileViewHolder holder, int position) {
+        // 이제 뷰에 profile정보 이용해서 묶어주자
+
+        String url = mEventList.get(position).image_url;
+        String name = mEventList.get(position).name;
+        Glide.with(mContext).load(url).into(holder.imageView);
+        holder.textView.setText(name);
 
     }
 
 
     @Override
     public int getItemCount() {
-        return 3;
+        return mEventList.size();
     }
 
     class EventsInfProfileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -53,7 +66,7 @@ public class EventsInProfileAdapter extends RecyclerView.Adapter<EventsInProfile
             super(itemView);
             Log.d(TAG,"호출테스트 Viewholder");
             imageView = (ImageView)itemView.findViewById(R.id.show_imageOfEvents_in_fragment_profile);;
-            textView = (TextView)itemView.findViewById(R.id.show_name_in_fragment_profile);
+            textView = (TextView)itemView.findViewById(R.id.show_nameOfEvents_in_fragment_profile);
             itemView.setOnClickListener(this);
         }
 
