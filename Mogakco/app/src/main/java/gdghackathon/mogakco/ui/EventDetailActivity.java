@@ -38,6 +38,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     TextView txtvDescription;
     @Bind(R.id.btnMapDetail)
     LinearLayout btnMapDetail;
+    @Bind(R.id.btnJoin)
+    RelativeLayout btnJoin;
 
     @Bind(R.id.imgvEvent)
     SimpleDraweeView imgvEvent;

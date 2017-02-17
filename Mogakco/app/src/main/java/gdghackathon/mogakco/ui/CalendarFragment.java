@@ -10,12 +10,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +45,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MM", Locale.getDefault());
     private SimpleDateFormat dateFormatForYear = new SimpleDateFormat("yyyy", Locale.getDefault());
 
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    HashMap<String, MogakcoEvent> map = new HashMap<>();
+
 
     @Nullable
     @Override
@@ -53,6 +63,34 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         // Set first day of week to Monday, defaults to Monday so calling setFirstDayOfWeek is not necessary
         // Use constants provided by Java Calendar class
         compactCalendarView.setFirstDayOfWeek(Calendar.MONDAY);
+
+
+        databaseReference.child("events").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                map.put(dataSnapshot.getKey(), (MogakcoEvent) dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         // Add yesterday (mock data)
         Event ev1 = new Event(Color.BLUE, new DateTime().minusDays(1).getMillis(), new MogakcoEvent("GDG 세미나", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
@@ -94,8 +132,23 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    //TODO 
+    private void drawEvent(MogakcoEvent event) {
+        if (event.getType() == "모각코") {
+            Event ev1 = new Event(Color.BLUE, new DateTime().minusDays(1).getMillis(), new MogakcoEvent("GDG 세미나", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
+
+        } else if (event.getType() == "세미나") {
+            Event ev1 = new Event(Color.BLUE, new DateTime().minusDays(1).getMillis(), new MogakcoEvent("GDG 세미나", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
+
+        } else if (event.getType() == "컨퍼런스") {
+            Event ev1 = new Event(Color.BLUE, new DateTime().minusDays(1).getMillis(), new MogakcoEvent("GDG 세미나", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
+
+        }
+
+    }
+
     private void showEventListDialog(List<Event> events) {
-        EventListDialog.init(getActivity(),events).show();
+        EventListDialog.init(getActivity(), events).show();
 
     }
 

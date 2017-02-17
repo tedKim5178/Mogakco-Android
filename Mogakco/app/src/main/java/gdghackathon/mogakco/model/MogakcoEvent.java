@@ -14,6 +14,7 @@ public class MogakcoEvent implements Serializable{
     String image_url;
     String description;
     String date;
+    String type;
 
     String address;
     float latitude;
@@ -84,5 +85,13 @@ public class MogakcoEvent implements Serializable{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
