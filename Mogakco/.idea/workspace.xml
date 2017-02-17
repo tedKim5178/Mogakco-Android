@@ -180,7 +180,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/gdghackathon/mogakco/ui/SignInActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="530">
-              <caret line="166" column="25" selection-start-line="166" selection-start-column="25" selection-end-line="166" selection-end-column="25" />
+              <caret line="166" column="54" selection-start-line="166" selection-start-column="54" selection-end-line="166" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1913#2494#0" expanded="true" />
@@ -3128,7 +3128,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/gdghackathon/mogakco/ui/SignInActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="530">
-          <caret line="166" column="25" selection-start-line="166" selection-start-column="25" selection-end-line="166" selection-end-column="25" />
+          <caret line="166" column="54" selection-start-line="166" selection-start-column="54" selection-end-line="166" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1913#2494#0" expanded="true" />

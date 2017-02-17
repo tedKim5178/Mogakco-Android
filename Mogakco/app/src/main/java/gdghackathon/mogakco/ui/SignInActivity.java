@@ -164,7 +164,6 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("name", name);
         intent.putExtra("email", email);
-        intent.putExtra("")
         startActivity(intent);
 
 
