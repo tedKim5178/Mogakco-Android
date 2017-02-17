@@ -6,11 +6,12 @@ package gdghackathon.mogakco.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -18,7 +19,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -37,6 +37,11 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
 
     static final String TAG = SignInActivity.class.getName();
     static final int RC_GOOGLE_SIGN_IN = 9001;
+
+
+    String name = "";
+    String email = "";
+    String profileImgUrl = "";
 
     public static Intent getStartIntent(Context context) {
         Log.d(TAG, "Facebook login canceled.");
@@ -135,13 +140,20 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d(TAG, "인증테스트");
         if( requestCode == RC_GOOGLE_SIGN_IN ) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if( result.isSuccess()){
                 String token = result.getSignInAccount().getIdToken();
                 AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
-                Log.d(TAG, "Token is = " + token);
+
+                name = result.getSignInAccount().getDisplayName();
+                email = result.getSignInAccount().getEmail();
+                profileImgUrl = result.getSignInAccount().getPhotoUrl().toString();
+
+
+                Log.d(TAG, "인증테스트 displayname");
+
                 mFirebaseAuth.signInWithCredential(credential);
             }
             else {
@@ -150,6 +162,9 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         }
 
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("name", name);
+        intent.putExtra("email", email);
+        intent.putExtra("")
         startActivity(intent);
 
 

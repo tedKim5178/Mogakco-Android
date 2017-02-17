@@ -1,16 +1,13 @@
 package gdghackathon.mogakco.ui;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +25,6 @@ import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
 import gdghackathon.mogakco.model.MogakcoEvent;
 import gdghackathon.mogakco.tools.bannerImageAdapter;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by choijinjoo on 2017. 2. 16..
@@ -116,17 +111,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         indicator.setStrokeWidth(0);
         indicator.setViewPager(mPager);
 
-        FloatingActionButton fabButton = (FloatingActionButton) v.findViewById(R.id.fab);
-
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Create a new intent to start an AddTaskActivity
-                Intent addTaskIntent = new Intent(getContext(), AddEventActivity.class);
-                startActivity(addTaskIntent);
-                Log.d(TAG, "플로팅테스트");
-            }
-        });
 
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
