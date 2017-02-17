@@ -24,8 +24,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import gdghackathon.mogakco.R;
+import gdghackathon.mogakco.core.AppController;
 
-public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     FirebaseAuth mFirebaseAuth;
     FirebaseAuth.AuthStateListener mFirebaseAuthListener;
 
@@ -57,25 +58,24 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         setTitle("Login");
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseAuthListener = new FirebaseAuth.AuthStateListener(){
+        mFirebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if ( user != null ){
+                if (user != null) {
                     Log.d(TAG, "sign in");
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     finish();
-                }
-                else {
+                } else {
                     Log.d(TAG, "sign out");
                 }
             }
         };
 
         mSigninGoogleButton = (SignInButton) findViewById(R.id.sign_in_google_button);
-        mSigninGoogleButton.setOnClickListener(new View.OnClickListener(){
+        mSigninGoogleButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -119,7 +119,6 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     }
 
 
-
     protected void onStart() {
         super.onStart();
         mFirebaseAuth.addAuthStateListener(mFirebaseAuthListener);
@@ -127,7 +126,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
 
     protected void onStop() {
         super.onStop();
-        if( mFirebaseAuthListener != null )
+        if (mFirebaseAuthListener != null)
             mFirebaseAuth.removeAuthStateListener(mFirebaseAuthListener);
     }
 
@@ -138,12 +137,12 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "인증테스트");
-        if( requestCode == RC_GOOGLE_SIGN_IN ) {
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if( result.isSuccess()){
+            if (result.isSuccess()) {
                 String token = result.getSignInAccount().getIdToken();
                 AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
 
@@ -155,16 +154,19 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 Log.d(TAG, "인증테스트 displayname");
 
                 mFirebaseAuth.signInWithCredential(credential);
-            }
-            else {
+
+                AppController.getInstance().getLocalStore().setStringValue("token", token);
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("email", email);
+                startActivity(intent);
+                finish();
+
+            } else {
+                AppController.getInstance().getLocalStore().clearLoginData();
                 Log.d(TAG, "Google Login Failed." + result.getStatus());
             }
         }
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("name", name);
-        intent.putExtra("email", email);
-        startActivity(intent);
 
 
     }

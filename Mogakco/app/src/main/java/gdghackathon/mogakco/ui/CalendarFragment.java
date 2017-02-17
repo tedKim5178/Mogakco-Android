@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
-    HashMap<String, MogakcoEvent> map = new HashMap<>();
+    HashMap<String, gdghackathon.mogakco.model.Event> map = new HashMap<>();
 
 
     @Nullable
@@ -68,26 +69,39 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         databaseReference.child("events").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                map.put(dataSnapshot.getKey(), (MogakcoEvent) dataSnapshot.getValue());
+                Log.d("s", "s");
+                gdghackathon.mogakco.model.Event event = gdghackathon.mogakco.model.Event.parseSnapshot(dataSnapshot);
+                if (!map.containsKey(dataSnapshot.getKey())) {
+                    map.put(dataSnapshot.getKey(), event);
+                    drawEvent(event);
+                }
+
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("s", "s");
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d("s", "s");
 
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                if (map.containsKey(dataSnapshot.getKey())) {
+
+                }
+                Log.d("s", "s");
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Log.d("s", "s");
 
             }
         });
@@ -133,7 +147,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     }
 
     //TODO 
-    private void drawEvent(MogakcoEvent event) {
+    private void drawEvent(gdghackathon.mogakco.model.Event event) {
         if (event.getType() == "모각코") {
             Event ev1 = new Event(Color.BLUE, new DateTime().minusDays(1).getMillis(), new MogakcoEvent("GDG 세미나", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
 
