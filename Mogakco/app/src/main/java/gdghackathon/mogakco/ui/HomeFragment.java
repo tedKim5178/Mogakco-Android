@@ -1,13 +1,16 @@
 package gdghackathon.mogakco.ui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
 import gdghackathon.mogakco.model.MogakcoEvent;
 import gdghackathon.mogakco.tools.bannerImageAdapter;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by choijinjoo on 2017. 2. 16..
@@ -48,17 +53,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     Handler handler;
     Runnable update;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, v);
-        initializeLayout();
+        initializeLayout(v);
         return v;
     }
 
-    private void initializeLayout() {
+    private void initializeLayout(View v) {
 
         List<MogakcoEvent> mogakcoEvents = new ArrayList<>();
         mogakcoEvents.add(new MogakcoEvent("모각코", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
@@ -112,6 +116,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         indicator.setStrokeWidth(0);
         indicator.setViewPager(mPager);
 
+        FloatingActionButton fabButton = (FloatingActionButton) v.findViewById(R.id.fab);
+
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create a new intent to start an AddTaskActivity
+                Intent addTaskIntent = new Intent(getContext(), AddEventActivity.class);
+                startActivity(addTaskIntent);
+                Log.d(TAG, "플로팅테스트");
+            }
+        });
+
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -143,8 +159,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
             };
         }
-
-        restartSwipeTimer();
 
     }
 

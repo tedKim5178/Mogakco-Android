@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import gdghackathon.mogakco.R;
-import gdghackathon.mogakco.ui.DetailActivity;
+import gdghackathon.mogakco.ui.EventDetailActivity;
 
 /**
  * Created by mk on 2017-02-17.
@@ -63,7 +63,7 @@ public class EventsInProfileAdapter extends RecyclerView.Adapter<EventsInProfile
             Log.d(TAG, "layoutposition테스트 " + position);
 
             // 인텐트
-            Intent intent = new Intent(mContext, DetailActivity.class);
+            Intent intent = new Intent(mContext, EventDetailActivity.class);
             mContext.startActivity(intent);
 
         }
