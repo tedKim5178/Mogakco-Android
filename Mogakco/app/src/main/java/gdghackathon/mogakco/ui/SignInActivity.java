@@ -32,13 +32,17 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     SignInButton mSigninGoogleButton;
     GoogleApiClient mGoogleApiClient;
 
+    // Auth///
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
 //    LoginButton mSigninFacebookButton;
 //    CallbackManager mFacebookCallbackManager;
 
     static final String TAG = SignInActivity.class.getName();
     static final int RC_GOOGLE_SIGN_IN = 9001;
 
-
+    String uid = "";
     String name = "";
     String email = "";
     String profileImgUrl = "";
@@ -49,10 +53,14 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         return intent;
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        mAuth = FirebaseAuth.getInstance();
 
         setTitle("Login");
 
@@ -71,6 +79,28 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 else {
                     Log.d(TAG, "sign out");
                 }
+            }
+        };
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "인증테스트onAuthStateChanged:signed_in:" + user.getUid());
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    uid = user.getUid();
+                    intent.putExtra("uid", uid);
+                    intent.putExtra("name", name);
+                    intent.putExtra("email", email);
+                    intent.putExtra("profileImgUrl", profileImgUrl);
+                    startActivity(intent);
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
             }
         };
 
@@ -122,13 +152,16 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
 
     protected void onStart() {
         super.onStart();
-        mFirebaseAuth.addAuthStateListener(mFirebaseAuthListener);
+        mAuth.addAuthStateListener(mAuthListener);
+
     }
+
 
     protected void onStop() {
         super.onStop();
-        if( mFirebaseAuthListener != null )
-            mFirebaseAuth.removeAuthStateListener(mFirebaseAuthListener);
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 
@@ -151,9 +184,6 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 email = result.getSignInAccount().getEmail();
                 profileImgUrl = result.getSignInAccount().getPhotoUrl().toString();
 
-
-                Log.d(TAG, "인증테스트 displayname");
-
                 mFirebaseAuth.signInWithCredential(credential);
             }
             else {
@@ -161,10 +191,6 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
             }
         }
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("name", name);
-        intent.putExtra("email", email);
-        startActivity(intent);
 
 
     }
