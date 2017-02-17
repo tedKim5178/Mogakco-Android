@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,6 +41,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Bind(R.id.btnMogakco)
     LinearLayout btnMogakco;
 
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+
     bannerImageAdapter topBannerAdapter;
     EventAdapter mAdapter;
 
@@ -48,31 +51,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     Handler handler;
     Runnable update;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, v);
+        loadEvent();
         initializeLayout();
         return v;
     }
 
     private void initializeLayout() {
 
-        List<MogakcoEvent> mogakcoEvents = new ArrayList<>();
-        mogakcoEvents.add(new MogakcoEvent("모각코", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
-        mogakcoEvents.add(new MogakcoEvent("모각코2", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
-        mogakcoEvents.add(new MogakcoEvent("모각코3", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
-        mogakcoEvents.add(new MogakcoEvent("모각코4", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
-        mogakcoEvents.add(new MogakcoEvent("모각코5", "http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png"));
-
-        mAdapter = new EventAdapter(getActivity(), null, new EventAdapter.OnClickListener() {
-            @Override
-            public void OnClick(MogakcoEvent event) {
-                startActivity(EventDetailActivity.getStartIntent(getActivity(), event));
-            }
-        });
         recvEvent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recvEvent.setAdapter(mAdapter);
 
@@ -82,16 +72,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 MapDialog.init(getActivity()).show();
             }
         });
-        mAdapter.add(mogakcoEvents);
 
 
         topBannerAdapter = new bannerImageAdapter(getFragmentManager());
-
         topBannerAdapter.addBannerImage("http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_1.png");
         topBannerAdapter.addBannerImage("http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_2.png");
         topBannerAdapter.addBannerImage("http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_3.png");
         topBannerAdapter.addBannerImage("http://storage.googleapis.com/mathpresso-storage/uploads/banners/16_giftpageimage_4.png");
-
         topBannerAdapter.notifyDataSetChanged();
 
         mPager.setAdapter(topBannerAdapter);
@@ -146,6 +133,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         restartSwipeTimer();
 
+    }
+
+    private void loadEvent(){
+        databaseReference = databaseReference.child("events");
+        mAdapter = new EventAdapter(getActivity(), databaseReference, new EventAdapter.OnClickListener() {
+            @Override
+            public void OnClick(MogakcoEvent event) {
+                startActivity(EventDetailActivity.getStartIntent(getActivity(), event));
+            }
+        });
     }
 
     @Override

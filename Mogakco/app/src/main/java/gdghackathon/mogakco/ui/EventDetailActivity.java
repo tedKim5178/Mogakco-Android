@@ -75,7 +75,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initializeLayout() {
-        txtvTitle.setText(mEvent.getTitle());
+        txtvTitle.setText(mEvent.getName());
         txtvDescription.setText(mEvent.getDescription());
 
         btnMapDetail.setOnClickListener(this);

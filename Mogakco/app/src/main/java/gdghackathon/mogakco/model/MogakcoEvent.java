@@ -10,44 +10,48 @@ import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class MogakcoEvent implements Serializable{
-    String title;
-    String image;
+    String name;
+    String image_url;
     String description;
+    String date;
+
     String address;
     float latitude;
     float longitude;
 
-
-    public MogakcoEvent(String title) {
-        this.title = title;
+    public MogakcoEvent() {
     }
 
-    public MogakcoEvent(String title, String image) {
-        this.title = title;
-        this.image = image;
+    public MogakcoEvent(String name) {
+        this.name = name;
     }
 
-    public MogakcoEvent(String title, String image, float latitude, float longitude) {
-        this.title = title;
-        this.image = image;
+    public MogakcoEvent(String name, String image_url) {
+        this.name = name;
+        this.image_url = image_url;
+    }
+
+    public MogakcoEvent(String name, String image_url, float latitude, float longitude) {
+        this.name = name;
+        this.image_url = image_url;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImage() {
-        return image;
+        return image_url;
     }
 
     public void setImage(String image) {
-        this.image = image;
+        this.image_url = image;
     }
 
     public Float getLatitude() {
