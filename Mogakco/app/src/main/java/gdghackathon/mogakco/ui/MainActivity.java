@@ -11,6 +11,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.melnykov.fab.FloatingActionButton;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.bottomNavi)
     BottomNavigationView bottomNavi;
     MainFragmentAdapter mAdapter;
+
 
     public static Intent getStartIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -82,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
         mPager.setCurrentItem(HOME_FRAGMENT);
         bottomNavi.getMenu().getItem(0).setChecked(false);
         BottomNavigationViewHelper.disableShiftMode(bottomNavi);
+
+
+
 
     }
 

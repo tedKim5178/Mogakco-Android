@@ -1,7 +1,6 @@
 package gdghackathon.mogakco.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +24,7 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
+import gdghackathon.mogakco.model.Event;
 import gdghackathon.mogakco.model.Profile;
 import gdghackathon.mogakco.tools.EventsInProfileAdapter;
 
@@ -56,13 +54,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     @Bind(R.id.set_up_email_button_in_fragment_profile)
     ImageButton setUpEmailButton;
 
-    private FirebaseAuth mAuth;
+//    private FirebaseAuth mAuth;
 
     private String mFirebaseUid;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private FirebaseDatabase firebaseDatabase_event = FirebaseDatabase.getInstance();
+
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private DatabaseReference databaseReference_event = firebaseDatabase_event.getReference();
+
     private ValueEventListener mProfileListener;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+//    private FirebaseAuth.AuthStateListener mAuthListener;
 
     private ArrayList<Profile> mProfileList = new ArrayList<>();
 
@@ -73,35 +75,38 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         Log.d(TAG, "파이어베이스테스트 onCreate");
 
         databaseReference = databaseReference.child("profiles");
+        databaseReference_event = databaseReference_event.child("events");
 
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener(){
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    Log.d(TAG, "파이어베이스테스트 sing in : " + user.getUid());
-                }else{
-                    Log.d(TAG, "파이어베이스테스트 sign out");
-                }
-            }
-        };
+//        mAuth = FirebaseAuth.getInstance();
+//        mAuthListener = new FirebaseAuth.AuthStateListener(){
+//
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if(user != null){
+//                    Log.d(TAG, "파이어베이스테스트 sing in : " + user.getUid());
+//                }else{
+//                    Log.d(TAG, "파이어베이스테스트 sign out");
+//                }
+//            }
+//        };
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "파이어베이스테스트 onstart");
-        mAuth.addAuthStateListener(mAuthListener);
 
         ValueEventListener profileListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                mProfileList.clear();
+//                dataSnapshot.child().getKey();
                 Log.d(TAG, "파이어베이스테스트 onstart 속 onDataChange");
+
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Profile profile = Profile.parseSnapshot(child);
+                    Log.d(TAG, "파이어베이스@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + child.getKey());
                     Log.d(TAG, "파이어베이스테스트 : " + profile.email);
                     Log.d(TAG, "파이어베이스테스트 : " + profile.name);
                     Log.d(TAG, "파이어베이스테스트 : " + profile.profileImgUrl);
@@ -120,8 +125,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 Log.d(TAG, "파이어베이스테스트 " + databaseError.getMessage());
             }
         };
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                mProfileList.clear();
+//                dataSnapshot.child().getKey();
+                Log.d(TAG, "파이어베이스테스트 onstart 속 onDataChange@@@@@@@@");
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    Event event = Event.parseSnapshot(child);
+                    Log.d(TAG, "파이어베이스 테스트 event " +event.description);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "파이어베이스테스트 " + databaseError.getMessage());
+            }
+        };
+
         if(databaseReference != null){
             databaseReference.addValueEventListener(profileListener);
+            databaseReference_event.addValueEventListener(eventListener);
         }
         mProfileListener = profileListener;
 
@@ -177,6 +202,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
                // name값 보내기
 
+//                FirebaseDatabase
 
                 break;
             case R.id.set_up_email_button_in_fragment_profile:

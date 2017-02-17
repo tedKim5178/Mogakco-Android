@@ -19,6 +19,9 @@
         android:layout_above="@+id/bottomNavi"
         android:background="@color/grey_light"/>
 
+
+
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNavi"
         style="@style/Mogakco.TabLayout"
@@ -28,4 +31,5 @@
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:menu="@menu/menu_bottom_navigation_main" />
+
 </RelativeLayout>

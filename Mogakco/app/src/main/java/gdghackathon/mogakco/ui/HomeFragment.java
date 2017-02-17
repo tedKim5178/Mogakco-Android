@@ -99,6 +99,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         indicator.setStrokeWidth(0);
         indicator.setViewPager(mPager);
 
+
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -130,8 +131,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
             };
         }
-
-        restartSwipeTimer();
 
     }
 
