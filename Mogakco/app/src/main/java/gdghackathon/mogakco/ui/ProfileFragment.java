@@ -1,6 +1,7 @@
 package gdghackathon.mogakco.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,14 +26,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
 import gdghackathon.mogakco.model.Event;
 import gdghackathon.mogakco.model.Profile;
+import gdghackathon.mogakco.model.UserInfoStatic;
 import gdghackathon.mogakco.tools.EventsInProfileAdapter;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static gdghackathon.mogakco.R.layout.fragment_profile;
 
@@ -34,7 +42,7 @@ import static gdghackathon.mogakco.R.layout.fragment_profile;
  * Created by choijinjoo on 2017. 2. 16..
  */
 
-public class ProfileFragment extends Fragment implements View.OnClickListener{
+public class ProfileFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
     private static final String TAG = ProfileFragment.class.getSimpleName();
 
 
@@ -54,6 +62,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     @Bind(R.id.set_up_email_button_in_fragment_profile)
     ImageButton setUpEmailButton;
 
+    @Bind(R.id.profile_image_in_fragment_profile)
+    ImageView profile_image_in_fragment_profile;
+
 //    private FirebaseAuth mAuth;
 
     private String mFirebaseUid;
@@ -67,12 +78,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 //    private FirebaseAuth.AuthStateListener mAuthListener;
 
     private ArrayList<Profile> mProfileList = new ArrayList<>();
+    private ArrayList<Event> mEventList = new ArrayList<>();
 
+    private String uid;
+
+    // key 가져오기
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "파이어베이스테스트 onCreate");
+
+
+        // Auth
+        mAuth = FirebaseAuth.getInstance();
 
         databaseReference = databaseReference.child("profiles");
         databaseReference_event = databaseReference_event.child("events");
@@ -90,51 +111,71 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 //                }
 //            }
 //        };
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "인증테스트onAuthStateChanged:signed_in:" + user.getUid());
+
+                    uid = user.getUid();
+
+
+
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "파이어베이스테스트 onstart");
+        mAuth.addAuthStateListener(mAuthListener);
 
         ValueEventListener profileListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                mProfileList.clear();
-//                dataSnapshot.child().getKey();
-                Log.d(TAG, "파이어베이스테스트 onstart 속 onDataChange");
+                mProfileList.clear();
 
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Profile profile = Profile.parseSnapshot(child);
-                    Log.d(TAG, "파이어베이스@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + child.getKey());
-                    Log.d(TAG, "파이어베이스테스트 : " + profile.email);
-                    Log.d(TAG, "파이어베이스테스트 : " + profile.name);
-                    Log.d(TAG, "파이어베이스테스트 : " + profile.profileImgUrl);
-                    Log.d(TAG, "파이어베이스테스트 : " + profile.firebaseUid);
                     mProfileList.add(profile);
-                    Log.d(TAG, "파이어베이스 테스트"+firebaseDatabase.getReference().getParent() + firebaseDatabase.getReference().getDatabase() + firebaseDatabase.getReference().getKey() + firebaseDatabase.getReference().getRoot());
-                    firebaseDatabase.getReference("child");
-                    Log.d(TAG, "파이어베이스 테스트  : " + mProfileList.size() + mProfileList.get(0).firebaseUid + mProfileList.get(0).email);
+
+                    // 여기서 notify 해줘야됨.
+
+                    Log.d(TAG, "프로필테스트 " + UserInfoStatic.getUserEmail());
 
 
                 }
-            }
 
+                for(int i=0; i<mProfileList.size(); i++){
+                    if((mProfileList.get(i).firebaseUid).equals(uid)){
+                        Glide.with(getContext()).load(mProfileList.get(i).profileImgUrl).bitmapTransform(new CropCircleTransformation(getContext())).into(profile_image_in_fragment_profile);
+                        nameUpdateEdittext.setText(mProfileList.get(i).name);
+                        emailUpdateEdittext.setText(mProfileList.get(i).email);
+                    }
+                }
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "파이어베이스테스트 " + databaseError.getMessage());
             }
         };
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                mProfileList.clear();
-//                dataSnapshot.child().getKey();
-                Log.d(TAG, "파이어베이스테스트 onstart 속 onDataChange@@@@@@@@");
+                mEventList.clear();
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Event event = Event.parseSnapshot(child);
-                    Log.d(TAG, "파이어베이스 테스트 event " +event.description);
+                    mEventList.add(event);
+                    eventsInProfileAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -169,6 +210,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         nameUpdateButton.setOnClickListener(this);
         emailUpdateButton.setOnClickListener(this);
 
+        // 리사이클러 어댑터에 arraylist 넘겨주자
+
+
         return v;
     }
 
@@ -177,7 +221,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
-        eventsInProfileAdapter = new EventsInProfileAdapter(getContext());
+
+
+        // 리사이클러 어댑터에 arraylist 넘겨주자
+        eventsInProfileAdapter = new EventsInProfileAdapter(getContext(), mEventList);
         mRecyclerView.setAdapter(eventsInProfileAdapter);
     }
 
@@ -198,27 +245,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             case R.id.set_up_name_button_in_fragment_profile:
                 // 눌리면 이제 다시 못적게
                 nameUpdateEdittext.setEnabled(false);
-                String name = nameUpdateEdittext.getText().toString();
-
-               // name값 보내기
-
-//                FirebaseDatabase
 
                 break;
             case R.id.set_up_email_button_in_fragment_profile:
                 emailUpdateEdittext.setEnabled(false);
-                String email = nameUpdateEdittext.getText().toString();
 
-                mProfileList.get(0).email = "rlaansrl789@gmail.com";
-//                mProfileList.size();
-                Log.d(TAG, "파이어베이스테스트 email눌렀을떼 mProfileList size : " + mProfileList.size());
-
-                FirebaseDatabase.getInstance().getReference().child("profiles").child("3epHnwNZqpZB00C6FY7fQIkRk9b2").updateChildren((HashMap)(mProfileList.get(0).toMap()));
-                // email값 보내기
-                Log.d(TAG, "파이어베이스 업뎃성공!" );
                 break;
         }
     }
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }
