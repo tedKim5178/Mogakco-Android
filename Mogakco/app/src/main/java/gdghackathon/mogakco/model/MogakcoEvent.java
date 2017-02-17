@@ -3,24 +3,36 @@ package gdghackathon.mogakco.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by choijinjoo on 2017. 2. 16..
  */
 
 @IgnoreExtraProperties
-public class MogakcoEvent implements Serializable{
+public class MogakcoEvent implements Serializable {
+    String eventId;
     String name;
     String image_url;
     String description;
     String date;
     String type;
+    String participants;
 
     String address;
-    float latitude;
+    public String latlng;
     float longitude;
 
     public MogakcoEvent() {
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public MogakcoEvent(String name) {
@@ -32,11 +44,10 @@ public class MogakcoEvent implements Serializable{
         this.image_url = image_url;
     }
 
-    public MogakcoEvent(String name, String image_url, float latitude, float longitude) {
+    public MogakcoEvent(String name, String image_url, String latlng) {
         this.name = name;
         this.image_url = image_url;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latlng = latlng;
     }
 
     public String getName() {
@@ -55,13 +66,6 @@ public class MogakcoEvent implements Serializable{
         this.image_url = image;
     }
 
-    public Float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(float latitude) {
-        this.latitude = latitude;
-    }
 
     public Float getLongitude() {
         return longitude;
@@ -93,5 +97,36 @@ public class MogakcoEvent implements Serializable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(String participants) {
+        this.participants = participants;
+    }
+
+    public String getLatlng() {
+        return latlng;
+    }
+
+    public void setLatlng(String latlng) {
+        this.latlng = latlng;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("eventId", eventId);
+        result.put("name", name);
+        result.put("image_url", image_url);
+        result.put("description", description);
+        result.put("date", date);
+        result.put("type", type);
+        result.put("participants", participants);
+        result.put("address", address);
+        result.put("latlng", latlng);
+        result.put("longitude", longitude);
+        return result;
     }
 }

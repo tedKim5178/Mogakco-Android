@@ -52,7 +52,7 @@ public class EventListDialog extends MaterialDialog {
         EventListAdapter mAdapter = new EventListAdapter(mContext, null);
         recvEvent.setAdapter(mAdapter);
         for (Event event : events) {
-            mAdapter.add((MogakcoEvent) event.getData());
+            mAdapter.add((MogakcoEvent) (((gdghackathon.mogakco.model.Event)event.getData()).toMogakcoEvent()));
         }
         setCanceledOnTouchOutside(true);
 
@@ -84,8 +84,8 @@ public class EventListDialog extends MaterialDialog {
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mContext.startActivity(EventDetailActivity.getStartIntent(mContext, item));
-                    dismiss();
+//                    mContext.startActivity(EventDetailActivity.getStartIntent(mContext, item,));
+//                    dismiss();
                 }
             });
         }
