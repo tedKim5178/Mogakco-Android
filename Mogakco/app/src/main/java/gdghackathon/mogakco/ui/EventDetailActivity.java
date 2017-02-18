@@ -69,10 +69,10 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         mEvent = (MogakcoEvent) getIntent().getSerializableExtra("event");
         eventKey = mEvent.getEventId();
 
-        if (mEvent.getParticipants()!=null && !mEvent.getParticipants().isEmpty()) {
+        if (mEvent.getParticipants() != null && !mEvent.getParticipants().isEmpty()) {
             String[] participants = mEvent.getParticipants().split(",");
-            for(int i=0; i< participants.length;i++){
-                if(participants[i] == AppController.getInstance().getLocalStore().getStringValue("uid","")) {
+            for (int i = 0; i < participants.length; i++) {
+                if (participants[i].equals(AppController.getInstance().getLocalStore().getStringValue("uid", ""))) {
                     btnJoin.setBackgroundColor(getResources().getColor(R.color.greyDarkLight));
                     btnJoin.setClickable(false);
                 }
@@ -85,8 +85,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onResume() {
         super.onResume();
-        if (mEvent.getLatlng() != null && mEvent.getLongitude() != null) {
-            drawMap();
+        if (mEvent.getLatlng() != null && !mEvent.getLatlng().isEmpty()) {
+            drawMap(mEvent.getLatlng());
         }
     }
 
@@ -110,22 +110,17 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    // variables for test
-    double lat;
-    double lon;
 
-    private void drawMap() {
+    private void drawMap(String ll) {
+        String[] latlng = ll.split(",");
+
         mapView = new MapView(this);
         mapView.setDaumMapApiKey(AppController.getInstance().getLocalStore().getDaumMapAPIkey());
         mapContainer.addView(mapView);
 
         MapPOIItem poiItem = new MapPOIItem();
 
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mapView.getMapCenterPoint().getMapPointGeoCoord().latitude, mapView.getMapCenterPoint().getMapPointGeoCoord().longitude);
-        lat = mapView.getMapCenterPoint().getMapPointGeoCoord().latitude;
-        lon = mapView.getMapCenterPoint().getMapPointGeoCoord().longitude;
-
-//            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mEvent.getLatitude(), mEvent.getLongitude());
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(Float.parseFloat(latlng[0]), Float.parseFloat(latlng[1]));
         poiItem.setMapPoint(mapPoint);
 
         MapPointBounds mapPointBounds = new MapPointBounds();
@@ -151,14 +146,14 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.btnJoin:
                 String participants = mEvent.getParticipants();
-                if (mEvent.getParticipants()!=null && !mEvent.getParticipants().isEmpty()) {
+                if (mEvent.getParticipants() != null && !mEvent.getParticipants().isEmpty()) {
                     participants += "," + AppController.getInstance().getLocalStore().getStringValue("uid", "");
                 } else {
                     participants = AppController.getInstance().getLocalStore().getStringValue("uid", "");
                 }
                 mEvent.setParticipants(participants);
                 databaseReference.child(eventKey).updateChildren((HashMap) (mEvent.toMap()));
-                Toast.makeText(this,"참가신청이 완료되었습니다! ",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "참가신청이 완료되었습니다! ", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -157,7 +157,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, G
 
                 for(int i=0; i<mProfileList.size(); i++){
                     if((mProfileList.get(i).firebaseUid).equals(uid)){
-                        Glide.with(getContext()).load(mProfileList.get(i).profileImgUrl).bitmapTransform(new CropCircleTransformation(getContext())).into(profile_image_in_fragment_profile);
+                        Glide.with(getActivity()).load(mProfileList.get(i).profileImgUrl).bitmapTransform(new CropCircleTransformation(getActivity())).into(profile_image_in_fragment_profile);
                         nameUpdateEdittext.setText(mProfileList.get(i).name);
                         emailUpdateEdittext.setText(mProfileList.get(i).email);
                     }

@@ -1,7 +1,6 @@
 package gdghackathon.mogakco.tools;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 
 import gdghackathon.mogakco.R;
 import gdghackathon.mogakco.model.Event;
-import gdghackathon.mogakco.ui.EventDetailActivity;
 
 /**
  * Created by mk on 2017-02-17.
@@ -57,7 +55,7 @@ public class EventsInProfileAdapter extends RecyclerView.Adapter<EventsInProfile
         return mEventList.size();
     }
 
-    class EventsInfProfileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class EventsInfProfileViewHolder extends RecyclerView.ViewHolder{
 
         ImageView imageView;
         TextView textView;
@@ -67,18 +65,9 @@ public class EventsInProfileAdapter extends RecyclerView.Adapter<EventsInProfile
             Log.d(TAG,"호출테스트 Viewholder");
             imageView = (ImageView)itemView.findViewById(R.id.show_imageOfEvents_in_fragment_profile);;
             textView = (TextView)itemView.findViewById(R.id.show_nameOfEvents_in_fragment_profile);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int position = getLayoutPosition();
-            Log.d(TAG, "layoutposition테스트 " + position);
-
-            // 인텐트
-            Intent intent = new Intent(mContext, EventDetailActivity.class);
-            mContext.startActivity(intent);
 
         }
+
+
     }
 }

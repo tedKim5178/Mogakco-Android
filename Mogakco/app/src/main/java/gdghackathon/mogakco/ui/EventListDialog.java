@@ -84,8 +84,8 @@ public class EventListDialog extends MaterialDialog {
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    mContext.startActivity(EventDetailActivity.getStartIntent(mContext, item,));
-//                    dismiss();
+                    mContext.startActivity(EventDetailActivity.getStartIntent(mContext, item));
+                    dismiss();
                 }
             });
         }

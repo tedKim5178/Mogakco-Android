@@ -5,8 +5,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -15,7 +16,7 @@ import gdghackathon.mogakco.R;
 public class BannerImageFragment extends Fragment  {
 
     @Bind(R.id.imgvContent)
-    SimpleDraweeView imgvContent;
+    ImageView imgvContent;
     String imageUrl;
 
     public static final BannerImageFragment newInstance(String url) {
@@ -36,7 +37,7 @@ public class BannerImageFragment extends Fragment  {
         ButterKnife.bind(this, v);
 
         if (imageUrl != null) {
-            imgvContent.setImageURI(imageUrl);
+            Glide.with(getContext()).load(imageUrl).into(imgvContent);
         }
         return v;
     }
