@@ -41,7 +41,7 @@ public class MapDialog extends MaterialDialog implements View.OnClickListener,Ma
     MapView mapView;
     protected InputMethodManager ipm;
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
-
+    static GetLocation getLocation;
 
     public MapDialog(Context context) {
         super(context);
@@ -50,6 +50,13 @@ public class MapDialog extends MaterialDialog implements View.OnClickListener,Ma
 
     public static MapDialog init(Context context) {
         MapDialog dialog = new MapDialog(context);
+        dialog.setup(context);
+        return dialog;
+    }
+
+    public static MapDialog init(Context context, GetLocation getLocation2) {
+        MapDialog dialog = new MapDialog(context);
+        getLocation = getLocation2;
         dialog.setup(context);
         return dialog;
     }
@@ -69,6 +76,10 @@ public class MapDialog extends MaterialDialog implements View.OnClickListener,Ma
         btnSearch.setOnClickListener(this);
         setView(view);
 
+    }
+
+    public interface GetLocation{
+        void getGPS(String latitude, String longtitude );
     }
 
     @Override
@@ -133,7 +144,7 @@ public class MapDialog extends MaterialDialog implements View.OnClickListener,Ma
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
         Toast.makeText(mContext,mapPOIItem.getItemName()+"geoCoord = "+mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude+","+mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude,Toast.LENGTH_SHORT).show();
-
+//        getLocation.getGPS(mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude, mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude,Toast.LENGTH_SHORT);
     }
 
     @Override

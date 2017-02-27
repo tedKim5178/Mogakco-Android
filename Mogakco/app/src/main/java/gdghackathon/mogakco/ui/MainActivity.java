@@ -11,9 +11,18 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import gdghackathon.mogakco.Controller.ProfileController;
 import gdghackathon.mogakco.R;
+import gdghackathon.mogakco.core.AppController;
+import gdghackathon.mogakco.model.Profile;
+import gdghackathon.mogakco.model.UserInfoStatic;
 import gdghackathon.mogakco.tools.BottomNavigationViewHelper;
 import gdghackathon.mogakco.tools.RegisteredFragmentStatePagerAdapter;
 
@@ -23,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.bottomNavi)
     BottomNavigationView bottomNavi;
     MainFragmentAdapter mAdapter;
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private ArrayList<Profile> mProfileList = new ArrayList<>();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     public static Intent getStartIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -33,6 +46,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String email = intent.getStringExtra("email");
+        String profileImgUrl = intent.getStringExtra("profileImgUrl");
+        String uid = intent.getStringExtra("uid");
+        AppController.getInstance().getLocalStore().setStringValue("uid",uid);
+
+        UserInfoStatic.setUserName(name);
+        UserInfoStatic.setUserEmail(email);
+//        Log.d(TAG, "인증테스트 : " + name + email + profileImgUrl);
+
+        databaseReference = databaseReference.child("profiles");
+        ProfileController.createProfile(uid, email, name, profileImgUrl);
+
         ButterKnife.bind(this);
         initializeLayout();
     }
@@ -82,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
         mPager.setCurrentItem(HOME_FRAGMENT);
         bottomNavi.getMenu().getItem(0).setChecked(false);
         BottomNavigationViewHelper.disableShiftMode(bottomNavi);
+
+
+
 
     }
 

@@ -9,29 +9,37 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.util.List;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
-import gdghackathon.mogakco.base.CustomAdapter;
 import gdghackathon.mogakco.model.MogakcoEvent;
 
 /**
  * Created by choijinjoo on 2017. 2. 17..
  */
 
-public class EventAdapter extends CustomAdapter<MogakcoEvent, EventAdapter.EventViewHolder> {
+public class EventAdapter extends FirebaseRecyclerAdapter<MogakcoEvent, EventAdapter.EventViewHolder> {
 
     OnClickListener mListener;
+    Context mContext;
 
-    interface OnClickListener{
+    interface OnClickListener {
         void OnClick(MogakcoEvent event);
     }
 
-    public EventAdapter(Context context, List<MogakcoEvent> data, OnClickListener listener) {
-        super(context, data);
+    public EventAdapter(Context context, Query query, OnClickListener listener) {
+        super(MogakcoEvent.class, R.layout.item_event, EventAdapter.EventViewHolder.class, query);
+        this.mContext = context;
+        this.mListener = listener;
+    }
+
+    public EventAdapter(Context context, DatabaseReference databaseReference, OnClickListener listener) {
+        super(MogakcoEvent.class, R.layout.item_event, EventAdapter.EventViewHolder.class, databaseReference);
+        this.mContext = context;
         this.mListener = listener;
     }
 
@@ -41,15 +49,15 @@ public class EventAdapter extends CustomAdapter<MogakcoEvent, EventAdapter.Event
     }
 
     @Override
-    public void onBindViewHolder(EventViewHolder holder, final int position) {
-        holder.txtvTitle.setText(mItems.get(position).getTitle());
-        if (mItems.get(position).getImage() != null) {
-            holder.imgvEvent.setImageURI(mItems.get(position).getImage());
+    protected void populateViewHolder(EventViewHolder holder, final MogakcoEvent model, int position) {
+        holder.txtvTitle.setText(model.getName());
+        if (model.getImage() != null) {
+            holder.imgvEvent.setImageURI(model.getImage());
         }
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.OnClick(mItems.get(position));
+                mListener.OnClick(model);
             }
         });
     }

@@ -9,13 +9,18 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
+
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,11 +43,17 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     TextView txtvDescription;
     @Bind(R.id.btnMapDetail)
     LinearLayout btnMapDetail;
+    @Bind(R.id.btnJoin)
+    RelativeLayout btnJoin;
 
     @Bind(R.id.imgvEvent)
     SimpleDraweeView imgvEvent;
     MapView mapView;
     MogakcoEvent mEvent;
+    String eventKey;
+
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = firebaseDatabase.getReference("events");
 
     public static Intent getStartIntent(Context context, MogakcoEvent mogakcoEvent) {
         Intent intent = new Intent(context, EventDetailActivity.class);
@@ -56,14 +67,26 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_eventdetail);
         ButterKnife.bind(this);
         mEvent = (MogakcoEvent) getIntent().getSerializableExtra("event");
+        eventKey = mEvent.getEventId();
+
+        if (mEvent.getParticipants() != null && !mEvent.getParticipants().isEmpty()) {
+            String[] participants = mEvent.getParticipants().split(",");
+            for (int i = 0; i < participants.length; i++) {
+                if (participants[i].equals(AppController.getInstance().getLocalStore().getStringValue("uid", ""))) {
+                    btnJoin.setBackgroundColor(getResources().getColor(R.color.greyDarkLight));
+                    btnJoin.setClickable(false);
+                }
+
+            }
+        }
         initializeLayout();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mEvent.getLatitude() != null && mEvent.getLongitude() != null) {
-            drawMap();
+        if (mEvent.getLatlng() != null && !mEvent.getLatlng().isEmpty()) {
+            drawMap(mEvent.getLatlng());
         }
     }
 
@@ -75,7 +98,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initializeLayout() {
-        txtvTitle.setText(mEvent.getTitle());
+        txtvTitle.setText(mEvent.getName());
         txtvDescription.setText(mEvent.getDescription());
 
         btnMapDetail.setOnClickListener(this);
@@ -83,25 +106,21 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         if (mEvent.getImage() != null) {
             imgvEvent.setImageURI(mEvent.getImage());
         }
+        btnJoin.setOnClickListener(this);
 
     }
 
-    // variables for test
-    double lat;
-    double lon;
 
-    private void drawMap() {
+    private void drawMap(String ll) {
+        String[] latlng = ll.split(",");
+
         mapView = new MapView(this);
         mapView.setDaumMapApiKey(AppController.getInstance().getLocalStore().getDaumMapAPIkey());
         mapContainer.addView(mapView);
 
         MapPOIItem poiItem = new MapPOIItem();
 
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mapView.getMapCenterPoint().getMapPointGeoCoord().latitude, mapView.getMapCenterPoint().getMapPointGeoCoord().longitude);
-        lat = mapView.getMapCenterPoint().getMapPointGeoCoord().latitude;
-        lon = mapView.getMapCenterPoint().getMapPointGeoCoord().longitude;
-
-//            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mEvent.getLatitude(), mEvent.getLongitude());
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(Float.parseFloat(latlng[0]), Float.parseFloat(latlng[1]));
         poiItem.setMapPoint(mapPoint);
 
         MapPointBounds mapPointBounds = new MapPointBounds();
@@ -125,7 +144,19 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnMapDetail:
                 startActivity(MapDetailActivity.getStartIntent(EventDetailActivity.this, mEvent));
                 break;
+            case R.id.btnJoin:
+                String participants = mEvent.getParticipants();
+                if (mEvent.getParticipants() != null && !mEvent.getParticipants().isEmpty()) {
+                    participants += "," + AppController.getInstance().getLocalStore().getStringValue("uid", "");
+                } else {
+                    participants = AppController.getInstance().getLocalStore().getStringValue("uid", "");
+                }
+                mEvent.setParticipants(participants);
+                databaseReference.child(eventKey).updateChildren((HashMap) (mEvent.toMap()));
+                Toast.makeText(this, "참가신청이 완료되었습니다! ", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
+
 
 }

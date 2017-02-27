@@ -46,7 +46,9 @@ public class MapDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        drawMap(mogakcoEvent.getLatitude(), mogakcoEvent.getLongitude());
+        String latlng[] = mogakcoEvent.getLatlng().split(",");
+
+        drawMap(Float.parseFloat(latlng[0]), Float.parseFloat(latlng[1]));
     }
 
 

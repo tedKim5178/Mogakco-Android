@@ -18,6 +18,7 @@ public class bannerImageAdapter extends RegisteredFragmentStatePagerAdapter {
 
     public void addBannerImage(String url) {
         urls.add(url);
+        notifyDataSetChanged();
     }
 
     @Override
