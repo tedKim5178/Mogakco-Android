@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.database.DatabaseReference;
@@ -54,11 +55,15 @@ public class MainActivity extends AppCompatActivity {
         String uid = intent.getStringExtra("uid");
         AppController.getInstance().getLocalStore().setStringValue("uid",uid);
 
+
         UserInfoStatic.setUserName(name);
         UserInfoStatic.setUserEmail(email);
 //        Log.d(TAG, "인증테스트 : " + name + email + profileImgUrl);
 
         databaseReference = databaseReference.child("profiles");
+        Log.d(TAG, "프로필테스트 : " + uid);
+        Log.d(TAG, "프로필테스트 : " + email);
+        Log.d(TAG, "프로필테스트 : " + name);
         ProfileController.createProfile(uid, email, name, profileImgUrl);
 
         ButterKnife.bind(this);

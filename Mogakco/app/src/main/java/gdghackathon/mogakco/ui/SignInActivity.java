@@ -3,7 +3,6 @@ package gdghackathon.mogakco.ui;
 /**
  * Created by mk on 2017-02-18.
  */
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -184,13 +183,13 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 profileImgUrl = result.getSignInAccount().getPhotoUrl().toString();
 
                 mFirebaseAuth.signInWithCredential(credential);
-
                 AppController.getInstance().getLocalStore().setStringValue("token", token);
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("email", email);
-                startActivity(intent);
-                finish();
+                Log.d(TAG, "인증테스트 : " + token);
+//                Intent intent = new Intent(this, MainActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("email", email);
+//                startActivity(intent);
+//                finish();
 
             } else {
                 AppController.getInstance().getLocalStore().clearLoginData();

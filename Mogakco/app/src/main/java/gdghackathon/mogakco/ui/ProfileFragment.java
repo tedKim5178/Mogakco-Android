@@ -32,7 +32,6 @@ import butterknife.ButterKnife;
 import gdghackathon.mogakco.R;
 import gdghackathon.mogakco.model.Event;
 import gdghackathon.mogakco.model.Profile;
-import gdghackathon.mogakco.model.UserInfoStatic;
 import gdghackathon.mogakco.tools.EventsInProfileAdapter;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
@@ -89,8 +88,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, G
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "파이어베이스테스트 onCreate");
-
 
         // Auth
         mAuth = FirebaseAuth.getInstance();
@@ -119,11 +116,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, G
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "인증테스트onAuthStateChanged:signed_in:" + user.getUid());
-
                     uid = user.getUid();
-
-
-
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -147,15 +140,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, G
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Profile profile = Profile.parseSnapshot(child);
                     mProfileList.add(profile);
-
                     // 여기서 notify 해줘야됨.
-
-                    Log.d(TAG, "프로필테스트 " + UserInfoStatic.getUserEmail());
-
-
+                    Log.d(TAG, "프로필테스트 " + profile.name);
                 }
 
                 for(int i=0; i<mProfileList.size(); i++){
+                    Log.d(TAG, "프로필테스트 mProfileList size: " + mProfileList.size());
+//                    Log.d(TAG, "프로필테스트 mProfileList.get(2)" + mProfileList.get(2).firebaseUid);
+//                    Log.d(TAG, "프로필테스트 mProfileList.get(3)" + mProfileList.get(3).firebaseUid);
                     if((mProfileList.get(i).firebaseUid).equals(uid)){
                         Glide.with(getActivity()).load(mProfileList.get(i).profileImgUrl).bitmapTransform(new CropCircleTransformation(getActivity())).into(profile_image_in_fragment_profile);
                         nameUpdateEdittext.setText(mProfileList.get(i).name);
