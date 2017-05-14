@@ -166,6 +166,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, G
                 mEventList.clear();
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Event event = Event.parseSnapshot(child);
+                    // 다 넣어주는게 아니고 신청한것만 보여주자..!
                     mEventList.add(event);
                     eventsInProfileAdapter.notifyDataSetChanged();
                 }
@@ -212,8 +213,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, G
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_in_fragment_profile);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
-
 
         // 리사이클러 어댑터에 arraylist 넘겨주자
         eventsInProfileAdapter = new EventsInProfileAdapter(getContext(), mEventList);

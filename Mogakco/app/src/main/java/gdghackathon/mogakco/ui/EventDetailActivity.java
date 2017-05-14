@@ -153,6 +153,9 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 }
                 mEvent.setParticipants(participants);
                 databaseReference.child(eventKey).updateChildren((HashMap) (mEvent.toMap()));
+                // 사람 이벤트부분도 업데이트 해줘야겠는데...
+//                databaseReference.child().updateChildren((HashMap));
+
                 Toast.makeText(this, "참가신청이 완료되었습니다! ", Toast.LENGTH_SHORT).show();
                 break;
         }

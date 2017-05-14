@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
+
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:foregroundGravity="center"
@@ -70,7 +72,16 @@
             android:background="@drawable/ic_set_up_in_fragment_profile_24dp" />
     </LinearLayout>
 
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="참가 신청한 모임/컨퍼런스 리스트"
+        android:textSize="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:textStyle="bold"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_weight="2"

@@ -42,6 +42,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     TextView txtvYear;
     @Bind(R.id.txtvMonth)
     TextView txtvMonth;
+    private static final String TAG = CalendarFragment.class.getSimpleName();
 
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MM", Locale.getDefault());
     private SimpleDateFormat dateFormatForYear = new SimpleDateFormat("yyyy", Locale.getDefault());
@@ -71,6 +72,9 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 gdghackathon.mogakco.model.Event event = gdghackathon.mogakco.model.Event.parseSnapshot(dataSnapshot);
+                Log.d(TAG, "주소 테스트 : " + event.getAddress());
+                Log.d(TAG, "디스크립션 테스트 : " + event.getDescription());
+                Log.d(TAG, "날짜 테스트 : " + event.getDate());
                 drawEvent(event);
             }
 
@@ -135,6 +139,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             ev1 = new Event(Color.BLUE, dateFormat.parseDateTime(event.getDate()).getMillis(), event);
 
         } else if (event.getType().equals("세미나")) {
+            Log.d(TAG, "테스트 : " + event);
+            Log.d(TAG, "테스트 : " + event.getDate());
             ev1 = new Event(Color.RED, dateFormat.parseDateTime(event.getDate()).getMillis(), event);
 
         } else if (event.getType().equals("컨퍼런스")) {

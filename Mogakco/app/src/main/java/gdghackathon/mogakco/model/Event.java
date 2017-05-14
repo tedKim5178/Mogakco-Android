@@ -1,5 +1,7 @@
 package gdghackathon.mogakco.model;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.HashMap;
@@ -19,6 +21,7 @@ public class Event {
     public String latlng;
     public String name;
     public String type;
+    private static final String TAG = Event.class.getSimpleName();
 
     public Event() {
     }
@@ -49,6 +52,7 @@ public class Event {
         Event event = new Event();
         event.address = (String) snapshot.child("address").getValue();
         event.date = (String) snapshot.child("date").getValue();
+        Log.d(TAG,"날짜 테스트 in parseSnapshot : " + event.date);
         event.description = (String) snapshot.child("description").getValue();
         event.image_url = (String) snapshot.child("image_url").getValue();
         event.latlng = (String) snapshot.child("latlng").getValue();

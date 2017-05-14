@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        Log.d(TAG, "LoginActiviy 테스트 : ");
 //        findViewById(R.id.logout_button).setOnClickListener(new View.OnClickListener() {
 //
 //            @Override
@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         if( mFirebaseUser == null ){
+            Log.d(TAG, "로그인테스트1 : ");
             Toast.makeText(this, "로그인이 필요합니다", Toast.LENGTH_SHORT).show();
 //
 //            Intent intent = new Intent(this, SignInActivity.class);
@@ -81,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //            finish();
         }
         else {
+            Log.d(TAG, "로그인테스트2 : ");
             mUsername = mFirebaseUser.getDisplayName();
             if (mFirebaseUser.getPhotoUrl() != null ){
                 mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();

@@ -48,23 +48,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        String email = intent.getStringExtra("email");
-        String profileImgUrl = intent.getStringExtra("profileImgUrl");
-        String uid = intent.getStringExtra("uid");
-        AppController.getInstance().getLocalStore().setStringValue("uid",uid);
+        if(AppController.getInstance().getLocalStore().getStringValue("token","").isEmpty()){
+            Intent intent = getIntent();
+            String name = intent.getStringExtra("name");
+            String email = intent.getStringExtra("email");
+            String profileImgUrl = intent.getStringExtra("profileImgUrl");
+            String uid = intent.getStringExtra("uid");
+            AppController.getInstance().getLocalStore().setStringValue("uid",uid);
 
-
-        UserInfoStatic.setUserName(name);
-        UserInfoStatic.setUserEmail(email);
+            UserInfoStatic.setUserName(name);
+            UserInfoStatic.setUserEmail(email);
 //        Log.d(TAG, "인증테스트 : " + name + email + profileImgUrl);
 
-        databaseReference = databaseReference.child("profiles");
-        Log.d(TAG, "프로필테스트 : " + uid);
-        Log.d(TAG, "프로필테스트 : " + email);
-        Log.d(TAG, "프로필테스트 : " + name);
-        ProfileController.createProfile(uid, email, name, profileImgUrl);
+            databaseReference = databaseReference.child("profiles");
+            Log.d(TAG, "프로필테스트 : " + uid);
+            Log.d(TAG, "프로필테스트 : " + email);
+            Log.d(TAG, "프로필테스트 : " + name);
+            ProfileController.createProfile(uid, email, name, profileImgUrl);
+
+        }else{
+
+            String uid = AppController.getInstance().getLocalStore().getStringValue("uid", "");
+            Log.d(TAG, "프로필테스트 : " + uid);
+        }
 
         ButterKnife.bind(this);
         initializeLayout();

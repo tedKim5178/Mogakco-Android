@@ -25,6 +25,7 @@ public class Profile {
         this.profileImgUrl = profileImgUrl;
     }
 
+
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
         result.put("firebaseUid", firebaseUid);
